@@ -9,6 +9,7 @@ namespace Puppet
     {
         #region Editable fields
 
+        [SerializeField] Vector3 _dancerPositionWS;
         [SerializeField] float _footDistance = 0.3f;
         [SerializeField] float _stepFrequency = 2;
         [SerializeField] float _stepHeight = 0.3f;
@@ -29,6 +30,7 @@ namespace Puppet
 
         [SerializeField] float _noiseFrequency = 1.1f;
         [SerializeField] uint _randomSeed = 123;
+        private float _finalHipheight;
 
         #endregion
 
@@ -236,7 +238,8 @@ namespace Puppet
                 var pos = Vector3.Lerp(LeftFootPosition, RightFootPosition, right);
 
                 // Vertical move: Two wave while one step. Add noise.
-                var y = _hipHeight + Mathf.Cos(StepTime * Mathf.PI * 4) * _stepHeight / 2;
+                _finalHipheight = _dancerPositionWS.y + _hipHeight;
+                var y = _finalHipheight + Mathf.Cos(StepTime * Mathf.PI * 4) * _stepHeight / 2;
                 y += noise.snoise(_noise) * _hipPositionNoise;
 
                 return SetY(pos, y);
@@ -391,8 +394,12 @@ namespace Puppet
 
         void OnAnimatorIK(int layerIndex)
         {
-            _animator.SetIKPosition(AvatarIKGoal.LeftFoot, LeftFootPosition);
-            _animator.SetIKPosition(AvatarIKGoal.RightFoot, RightFootPosition);
+            var leftFootPos = LeftFootPosition;
+            var rightFootPos = RightFootPosition;
+            leftFootPos.y += _dancerPositionWS.y;
+            rightFootPos.y += _dancerPositionWS.y;
+            _animator.SetIKPosition(AvatarIKGoal.LeftFoot, leftFootPos);
+            _animator.SetIKPosition(AvatarIKGoal.RightFoot, rightFootPos);
             _animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 1);
             _animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, 1);
 

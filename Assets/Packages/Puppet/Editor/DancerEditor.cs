@@ -7,6 +7,7 @@ namespace Puppet
     [CustomEditor(typeof(Dancer))]
     public class DancerEditor : Editor
     {
+        SerializedProperty _dancerPositionWS;
         SerializedProperty _footDistance;
         SerializedProperty _stepFrequency;
         SerializedProperty _stepHeight;
@@ -40,6 +41,7 @@ namespace Puppet
 
         void OnEnable()
         {
+            _dancerPositionWS = serializedObject.FindProperty("_dancerPositionWS");
             _footDistance = serializedObject.FindProperty("_footDistance");
             _stepFrequency = serializedObject.FindProperty("_stepFrequency");
             _stepHeight = serializedObject.FindProperty("_stepHeight");
@@ -68,6 +70,7 @@ namespace Puppet
 
             EditorGUILayout.PropertyField(_randomSeed);
             EditorGUILayout.PropertyField(_noiseFrequency);
+            EditorGUILayout.PropertyField(_dancerPositionWS);
 
             EditorGUILayout.Space();
 
